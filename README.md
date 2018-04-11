@@ -7,7 +7,8 @@ postgresql 9.6.8, default user and db (postgres, postgres, postgres)
 Install python version 3.6.5\
 $ pip install django\
 $ pip install djangorestframework\
-$ pip install psycopg2
+$ pip install psycopg2\
+$ pip install sphinxapi-py3
 
 **From the project subdirectory run the following commands:**
 
@@ -26,26 +27,38 @@ From localhost:8000
 /api/users/{userid}/routes/ - To view the routes of a user in date range                           
                              as with date as optional query params
                              start_date=yyyy/mm/dd ,end_date=yyyy/mm/dd
+                             
+/api/search- freetext search with sphinx. Pass query as q=<some_query>'                         
 
+**Sphinx was configured using the following settings in sphinx.conf to create the indexes**
+source loc_source\
+{\
+    type      = pgsql\
+    sql_host  = localhost\
+    sql_user  = postgres\
+    sql_pass  = postgres\
+    sql_db    = postgres\
+    sql_port  = 5433\
+    sql_query = SELECT loc.id, loc.location , loc.loctime, loc.latitude, loc.longitude, u.username, u.email from trackerapp_userlocation loc\
+                left join auth_user u on u.id=loc.user_id\
+}
 
-                             
-**Following additional changes are pending:**
+index loc_index\
+{
+    source        = loc_source\
+    path          = C://sphinx/sphinx-3.0.3/abc.sph\
+}
 
-1) Search API with Sphinx
-2) Authentication & Permissions
-3) To show the last known routes(locations) of a user when no date range is specified(
-   currently displays all locations)
+indexer\
+{
+    mem_limit    = 256M\
+    write_buffer = 8M\
+}
 
-                             
-                             
-                             
-                             
-                             
-                             
-                             
-                             
-                             
-
-
-
-    
+searchd\
+{\
+    listen                  = 9312\
+    pid_file                = C://sphinx/searchd.pid\
+    log         = C://sphinx/sphinx-3.0.3/log/searchd.log\
+    query_log = C://sphinx/sphinx-3.0.3/log/query.log\
+}
