@@ -8,6 +8,6 @@ from trackerapp.models import UserLocation
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:  
         model = UserLocation
-        fields = ('id', 'location','latitude','longitude','loctime','user') 
+        fields = ('id', 'location','latitude','longitude','loctime') 
         many=True       
     
