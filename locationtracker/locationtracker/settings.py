@@ -37,10 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'trackerapp',
-    'rest_framework',    
-    'oauth2_provider',   
+    'rest_framework', 
     'django.contrib.staticfiles',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -142,3 +142,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+SPHINX_HOST='localhost'
+SPHINX_PORT=9312
+SPHINX_INDEX='loc_index' 

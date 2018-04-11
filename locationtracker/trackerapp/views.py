@@ -9,7 +9,11 @@ from datetime import datetime
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.decorators import permission_classes
 from django.db.models import Max
-from django.db.models import OuterRef, Subquery
+from django.db.models import Subquery
+from sphinxapi import SPH_MATCH_EXTENDED
+from sphinxapi import SPH_RANK_SPH04
+from sphinxapi import SphinxClient
+from django.conf import settings
 
 
 class UserLocationCRUDView(generics.RetrieveUpdateDestroyAPIView):
@@ -96,21 +100,35 @@ class UserRouteListView(generics.ListAPIView):
         
     def list(self, request, *args, **kwargs):
         userLocations = self.get_queryset()
-        locations = [] 
-        dates = []
+        locations = []      
         distance = 0.00 
         i = 0 
         if userLocations is not None:   
             for i in range(len(userLocations) - 1):
-                locations.append(userLocations[i].location)
-                dates.append(userLocations[i].loctime)           
+                locations.append(userLocations[i].location)                   
                 distance += lat_long_distance(userLocations[i].latitude,
                                         userLocations[i + 1].latitude,
                                         userLocations[i].longitude,
                                         userLocations[i + 1].longitude)
         if(i > 0):       
-            locations.append(userLocations[i + 1].location) 
-            dates.append(userLocations[i + 1].loctime)  
+            locations.append(userLocations[i + 1].location)     
       
-        return Response({"locations":locations, "distance":distance, "dates":dates})
+        return Response({"locations":locations, "distance":distance})
+
+    
+@permission_classes((IsAuthenticated, IsAdminUser))     
+class SearchListView(generics.ListAPIView):
+   
+        def list(self, request, *args, **kwargs):
+            
+            client = SphinxClient();
+            client.SetServer(settings.SPHINX_HOST, settings.SPHINX_PORT);
+            client.SetMatchMode(SPH_MATCH_EXTENDED);
+            client.SetRankingMode (SPH_RANK_SPH04);
+            query = self.request.query_params.get('q', None)        
+            if query is not None:
+                searchresults = client.Query(query, settings.SPHINX_INDEX);            
+                return Response(searchresults)       
+            
+            return Response({"message":"No record found"})
         
