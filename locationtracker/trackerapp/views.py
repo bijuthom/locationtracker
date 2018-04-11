@@ -8,6 +8,8 @@ from rest_framework import status
 from datetime import datetime
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.decorators import permission_classes
+from django.db.models import Max
+from django.db.models import OuterRef, Subquery
 
 
 class UserLocationCRUDView(generics.RetrieveUpdateDestroyAPIView):
@@ -84,23 +86,31 @@ class UserRouteListView(generics.ListAPIView):
             return UserLocation.objects.filter(user=user, loctime__lte=
               datetime.combine(end_date, datetime.min.time())).order_by("loctime")
         else:
-            return UserLocation.objects.filter(user=user).order_by('-loctime')            
-    
+            return   UserLocation.objects.filter(
+            loctime=Subquery(
+            (UserLocation.objects
+            .filter(user=user))
+            .annotate(last_time=Max('loctime'))
+            .values('last_time')[:1]
+            ), user=user)
+        
     def list(self, request, *args, **kwargs):
         userLocations = self.get_queryset()
         locations = [] 
+        dates = []
         distance = 0.00 
         i = 0 
         if userLocations is not None:   
             for i in range(len(userLocations) - 1):
-                locations.append(userLocations[i].location)                  
+                locations.append(userLocations[i].location)
+                dates.append(userLocations[i].loctime)           
                 distance += lat_long_distance(userLocations[i].latitude,
                                         userLocations[i + 1].latitude,
                                         userLocations[i].longitude,
                                         userLocations[i + 1].longitude)
         if(i > 0):       
-            locations.append(userLocations[i + 1].location)     
+            locations.append(userLocations[i + 1].location) 
+            dates.append(userLocations[i + 1].loctime)  
       
-        return Response({"locations":locations, "distance":distance})
-    
+        return Response({"locations":locations, "distance":distance, "dates":dates})
         
