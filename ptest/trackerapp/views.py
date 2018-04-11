@@ -71,22 +71,19 @@ class UserRouteListView(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         userLocations=self.get_queryset()
         locations=[] 
-        dates=[]
         distance=0.00 
         i=0 
         if userLocations is not None:   
             for i in range(len(userLocations)-1):
-                locations.append(userLocations[i].location)
-                dates.append(userLocations[i].loctime)           
+                locations.append(userLocations[i].location)                  
                 distance+=lat_long_distance(userLocations[i].latitude,
                                         userLocations[i+1].latitude,
                                         userLocations[i].longitude,
                                         userLocations[i+1].longitude)
         if(i>0):       
-            locations.append(userLocations[i+1].location) 
-            dates.append(userLocations[i+1].loctime)  
+            locations.append(userLocations[i+1].location)     
       
-        return Response( {"locations":locations,"distance":distance,"dates":dates} )
+        return Response( {"locations":locations,"distance":distance} )
      
 
     
