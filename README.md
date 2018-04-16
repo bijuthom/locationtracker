@@ -26,13 +26,11 @@ From localhost:8000
 /api/location/{locationId}/ -view/modify a single location\
 /api/users/{userid}/locations/ -locations of a specific user\
 /api/users/{userid}/routes/ - To view the routes of a user in date range                           
-                             as with date as optional query params
-                             start_date=yyyy/mm/dd ,end_date=yyyy/mm/dd
-                             
-/api/search- freetext search with sphinx. Pass query as q=<some_query>'
+                              with date as optional query params start_date=yyyy/mm/dd ,end_date=yyyy/mm/dd                             
+/api/search- freetext search with sphinx. Pass query as q=<some_keyword_to_search>'\
 /api-token-auth/,/api-token-verify/,/api-token-refresh/ - jwt tokens                       
 
-**Sphinx was configured using the following settings in sphinx.conf to create the indexes**
+**Sphinx was configured using the following settings in sphinx.conf to create the indexes**\
 source loc_source\
 {\
     type      = pgsql\
