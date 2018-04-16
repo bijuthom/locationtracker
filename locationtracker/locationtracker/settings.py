@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'locationtracker.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
@@ -96,6 +96,7 @@ REST_FRAMEWORK = {
     ),
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
@@ -103,6 +104,10 @@ REST_FRAMEWORK = {
  
  
    'EXCEPTION_HANDLER': 'trackerapp.exceptions.custom_exception_handler'
+}
+
+JWT_AUTH = {
+    'JWT_ALLOW_REFRESH': True,
 }
 
 # Password validation
