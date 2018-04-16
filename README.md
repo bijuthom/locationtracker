@@ -8,7 +8,8 @@ Install python version 3.6.5\
 $ pip install django\
 $ pip install djangorestframework\
 $ pip install psycopg2\
-$ pip install sphinxapi-py3
+$ pip install sphinxapi-py3\
+$ pip install djangorestframework-jwt
 
 **From the project subdirectory run the following commands:**
 
@@ -28,7 +29,8 @@ From localhost:8000
                              as with date as optional query params
                              start_date=yyyy/mm/dd ,end_date=yyyy/mm/dd
                              
-/api/search- freetext search with sphinx. Pass query as q=<some_query>'                         
+/api/search- freetext search with sphinx. Pass query as q=<some_query>'
+/api-token-auth/,/api-token-verify/,/api-token-refresh/ - jwt tokens                       
 
 **Sphinx was configured using the following settings in sphinx.conf to create the indexes**
 source loc_source\

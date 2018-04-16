@@ -100,20 +100,22 @@ class UserRouteListView(generics.ListAPIView):
         
     def list(self, request, *args, **kwargs):
         userLocations = self.get_queryset()
+        print (userLocations.query)
         locations = []      
         distance = 0.00 
         i = 0 
         if userLocations is not None:   
             for i in range(len(userLocations) - 1):
+                print (userLocations[i].location)
                 locations.append(userLocations[i].location)                   
                 distance += lat_long_distance(userLocations[i].latitude,
                                         userLocations[i + 1].latitude,
                                         userLocations[i].longitude,
                                         userLocations[i + 1].longitude)
-        if(i > 0):       
-            locations.append(userLocations[i + 1].location)     
-      
-        return Response({"locations":locations, "distance":distance})
+        if(len(userLocations) > 0):       
+            locations.append(userLocations[len(userLocations)-1].location)             
+     
+        return Response({"locations":locations, "distance":round(distance,2)})
 
     
 @permission_classes((IsAuthenticated, IsAdminUser))     
