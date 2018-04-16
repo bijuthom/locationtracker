@@ -73,6 +73,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'locationtracker.wsgi.application'
 
 
+AUTH_USER_MODEL = 'trackerapp.AppUser'
+
+
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
