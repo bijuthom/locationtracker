@@ -14,7 +14,10 @@ from sphinxapi import SPH_MATCH_EXTENDED
 from sphinxapi import SPH_RANK_SPH04
 from sphinxapi import SphinxClient
 from django.conf import settings
-
+from sphinxql.query import SearchQuerySet
+from .indexes import AppUserIndex,UserLocationIndex
+from trackerapp.serializers import AppUserSerializer
+from .models import AppUser,UserLocation
 
 class UserLocationCRUDView(generics.RetrieveUpdateDestroyAPIView):
     
@@ -125,10 +128,31 @@ class SearchListView(generics.ListAPIView):
             client.SetServer(settings.SPHINX_HOST, settings.SPHINX_PORT);
             client.SetMatchMode(SPH_MATCH_EXTENDED);
             client.SetRankingMode (SPH_RANK_SPH04);
-            query = self.request.query_params.get('q', None)        
+            query = self.request.query_params.get('q', None)       
             if query is not None:
                 searchresults = client.Query(query, settings.SPHINX_INDEX);            
-                return Response(searchresults)       
-            
+                return Response(searchresults)
+      
             return Response({"message":"No record found"})
+        
+@permission_classes((IsAuthenticated, IsAdminUser))
+class SearchUserView(generics.ListAPIView):
+        serializer_class=AppUserSerializer
+        
+        def get_queryset(self):       
+            query = self.request.query_params.get('q', None)    
+            if not query:
+                return AppUser.objects.none()     
+            return  SearchQuerySet(AppUserIndex).search('@(first_name,last_name,email) '+ query)  
+           
+@permission_classes((IsAuthenticated, IsAdminUser))
+class SearchLocationView(generics.ListAPIView):
+        serializer_class=LocationSerializer
+        def get_queryset(self):         
+            query = self.request.query_params.get('q', None)              
+            if not query:
+                return UserLocation.objects.none()
+            return  SearchQuerySet(UserLocationIndex).search('@(location) '+ query)
+              
+                
         

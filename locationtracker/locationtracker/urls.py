@@ -13,15 +13,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+from django.contrib import admin  
 from django.urls import path,re_path,include
 from rest_framework_jwt.views import obtain_jwt_token,verify_jwt_token,refresh_jwt_token
+from rest_framework_swagger.views import get_swagger_view
+schema_view = get_swagger_view(title='Demo Swagger API')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/',include('trackerapp.urls')),
+    path('admin/', admin.site.urls), 
+    path('api/',include('trackerapp.urls')), 
     re_path(r'^api-token-auth/',obtain_jwt_token),
     re_path(r'^api-token-verify/', verify_jwt_token),
     re_path(r'^api-token-refresh/', refresh_jwt_token),
+    path('swagger/', schema_view),
     
 ]

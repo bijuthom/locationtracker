@@ -9,7 +9,8 @@ $ pip install django\
 $ pip install djangorestframework\
 $ pip install psycopg2\
 $ pip install sphinxapi-py3\
-$ pip install djangorestframework-jwt
+$ pip install djangorestframework-jwt\
+$ pip install django-sphinxql
 
 **From the project subdirectory run the following commands:**
 
@@ -24,6 +25,8 @@ From localhost:8000
 /admin/ (login to the admin UI)\
 /api/locations/ (To upload &list locations)\
 /api/location/{locationId}/ -view/modify a single location\
+/api/user/search?q= -search user\
+/api/location/search?q -search location\
 /api/users/{userid}/locations/ -locations of a specific user\
 /api/users/{userid}/routes/ - To view the routes of a user in date range                           
                               with date as optional query params start_date=yyyy/mm/dd ,end_date=yyyy/mm/dd                             

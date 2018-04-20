@@ -3,7 +3,7 @@ Created on Apr 10, 2018
 
 @author: biju
 '''
-from rest_framework.views import exception_handler
+from rest_framework.views import exception_handler   
  
 def custom_exception_handler(exc, context):
     # Call REST framework's default exception handler first,

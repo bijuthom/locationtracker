@@ -37,8 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'trackerapp',
-    'rest_framework', 
+    'rest_framework_jwt',
+    'rest_framework',
+    'rest_framework_swagger', 
     'django.contrib.staticfiles',
+    'sphinxql'
 ]
 
 
@@ -91,8 +94,27 @@ DATABASES = {
     
 }
 
+INDEXES = {
+    'path': os.path.join(BASE_DIR, '_index'),
+    'sphinx_path': BASE_DIR,
+     'searchd_params': {
+     'log': os.path.join(BASE_DIR, 'searchd.log'),
+     'query_log':os.path.join(BASE_DIR, 'query.log'), 
+     'listen':'9306:mysql41',  
+    }
+}
+
+SPHINX_API_VERSION = 0x113
+USE_SPHINX_SEARCH = True
+
 
 REST_FRAMEWORK = {
+    
+     'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.JSONParser',
+    ],
    
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
